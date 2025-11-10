@@ -55,7 +55,7 @@ int main(int numArgs, const char *aArgs[])
 
     /* Loop until the user closes the window */
 
-    bool do_benchmark = true;
+    bool do_benchmark                   = numLastPhysicsSeconds > 0.0;
     static double lastTime              = 0.0f;
     static double elapsed               = 0.0;
     static int    numFrame              = 0;
