@@ -253,7 +253,7 @@ int main(int numArgs, const char *aArgs[])
 
         /* Poll for and process events */
         glfwPollEvents();
-        if (benchmark && (elapsed >= numLastPhysicsSeconds)) break;
+        if (numLastPhysicsSeconds > 0.0 && (elapsed >= numLastPhysicsSeconds)) break;
     }
 
     double frames  = (double)numFrame; // frames
