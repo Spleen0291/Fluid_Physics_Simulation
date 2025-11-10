@@ -4,7 +4,7 @@
 unsigned int Window::vao = 0;
 unsigned int Window::vbo = 0;
 
-Window :: Window(int w, int h) {
+Window :: Window(int w, int h, bool waitVSync) {
     glfwInit();
 
     GLFWwindow* window;
@@ -23,9 +23,16 @@ Window :: Window(int w, int h) {
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
-    glfwSwapInterval(1);
+    if (waitVSync)
+        glfwSwapInterval(1);
+    else
+        glfwSwapInterval(0);
 
+#if USE_CPP_IOSTREAM
     if (glewInit() != GLEW_OK) std::cout << "Error!" << std::endl;
+#else
+    if (glewInit() != GLEW_OK) printf( "Error!\n" );
+#endif
 }
 
 void Window::drawBoundary(int object_Location, int color_Location) {
