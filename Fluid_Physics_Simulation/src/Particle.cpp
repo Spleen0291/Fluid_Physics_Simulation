@@ -208,28 +208,30 @@ glm::vec3 velToColor(Particle p) {
     return color;
 }
 
-void Particle::drawElements(Window window, int object_Location, int color_Location) {
+void Particle::drawElements(Window window, int object_Location, int color_Location, bool bDraw) {
+    if (bDraw)
+    {
+        glBindVertexArray(vao);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, 2 * centers.size() / 2 * (segments + 2) * sizeof(float), positions.data(), GL_DYNAMIC_DRAW);
 
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, 2 * centers.size() / 2 * (segments + 2) * sizeof(float), positions.data(), GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * centers.size() / 2 * (segments + 2) * sizeof(unsigned int), indices.data(), GL_DYNAMIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * centers.size() / 2 * (segments + 2) * sizeof(unsigned int), indices.data(), GL_DYNAMIC_DRAW);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
+        glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
-    glEnableVertexAttribArray(0);
+        // Draw Loop
+        for (int i = 0; i < particles.size(); ++i) {
+            Particle& p = particles[i];
+            glm::vec3 translate = glm::vec3(0.0f);
+            glm::vec3 color = velToColor(p);
 
-    // Draw Loop
-    for (int i = 0; i < particles.size(); ++i) {
-        Particle& p = particles[i];
-        glm::vec3 translate = glm::vec3(0.0f);
-        glm::vec3 color = velToColor(p);
+            glUniform4f(object_Location, p.pos.x+translate.x ,p.pos.y+translate.y , translate.z, 0.0f);
+            glUniform3f(color_Location, color.r, color.g, color.b);
 
-        glUniform4f(object_Location, p.pos.x+translate.x ,p.pos.y+translate.y , translate.z, 0.0f);
-        glUniform3f(color_Location, color.r, color.g, color.b);
-
-        glDrawElements(GL_TRIANGLES, 3 * segments, GL_UNSIGNED_INT, (void*)(i * 3 * segments * sizeof(unsigned int)));
+            glDrawElements(GL_TRIANGLES, 3 * segments, GL_UNSIGNED_INT, (void*)(i * 3 * segments * sizeof(unsigned int)));
+        }
     }
 
     // change position and cell

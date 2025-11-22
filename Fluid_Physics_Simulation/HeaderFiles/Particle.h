@@ -57,5 +57,6 @@ public:
 	static float pressureKernel(float dst);
 	static float nearPressureKernel(float dst);
 	static float viscosityKernel(float dst);
-	static void drawElements(Window window, int object_Location, int color_Location);
+//	static void drawElements(Window window, int object_Location, int color_Location);
+	static void drawElements(Window window, int object_Location, int color_Location, bool bDraw);
 };
